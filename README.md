@@ -1,6 +1,6 @@
 # DriveIdent - Anwendung zur Fahrererkennung aus Fahrsimulator-Telemetriedaten
 
-Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutzeroberfläche. Das System klassifiziert den Fahrer aus CSV-Recordings mittels maschinellem Lernen (RandomForest, LogisticRegression, GradientBoosting), siehe [Backend-Readme](../lib/core/README.md).
+Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutzeroberfläche. Das System klassifiziert den Fahrer aus CSV-Recordings mittels maschinellem Lernen (RandomForest, LogisticRegression, GradientBoosting), siehe [Backend-Readme](./lib/core/README.md).
 
 ---
 
@@ -9,7 +9,7 @@ Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutz
 1. [Überblick](#1-überblick)
 1. [Installation](#2-installation)
 1. [Projektstruktur](#3-projektstruktur)
-1. [Nutzung / Build](#4-nutzung-/-build)
+1. [Nutzung / Build](#4-nutzung--build)
 1. [Datenformate](#5-datenformate)
 1. [Konfiguration der Voreinstellungen](#6-konfiguration-der-voreinstellungen)
 
@@ -35,7 +35,7 @@ Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutz
 
 - **Download:** Source-Code aus diesem Repository klonen
 - **Voraussetzung:** Python 3.10 - 3.12  (Featuretools kann in 3.13 Probleme verursachen)
-- **Abhängigkeiten:** `pip install -r requirements.txt`, oder siehe [requirements.txt](../requirements.txt)
+- **Abhängigkeiten:** `pip install -r requirements.txt`, oder siehe [requirements.txt](./requirements.txt)
 
 ### Ausführbare Datei (.exe) für Windows
 
