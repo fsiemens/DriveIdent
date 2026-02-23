@@ -8,10 +8,10 @@ Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutz
 
 1. [Überblick](#1-überblick)
 1. [Installation](#2-installation)
-1. [Projektstruktur](#4-projektstruktur)
-1. [Nutzung / Build](#5-nutzung)
-1. [Datenformate](#6-datenformate)
-1. [Konfiguration der Voreinstellungen](#7-konfiguration)
+1. [Projektstruktur](#3-projektstruktur)
+1. [Nutzung / Build](#4-nutzung-/-build)
+1. [Datenformate](#5-datenformate)
+1. [Konfiguration der Voreinstellungen](#6-konfiguration-der-voreinstellungen)
 
 ---
 
@@ -29,7 +29,7 @@ Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutz
 
 ---
 
-## 1. Installation
+## 2. Installation
 
 ### Python (Source-Code)
 
@@ -43,7 +43,7 @@ Fahrererkennung anhand von Fahrsimulator-Daten über eine simple graphische Nutz
 
 ---
 
-## 1. Projektstruktur
+## 3. Projektstruktur
 
 ```
 DriveIdent/
@@ -60,7 +60,7 @@ DriveIdent/
 
 ---
 
-## 1. Nutzung / Build
+## 4. Nutzung / Build
 
 ### Source-Code
 
@@ -87,7 +87,7 @@ pyinstaller --windowed --onefile --collect-all tsfresh --collect-all featuretool
 
 ---
 
-## 1. Datenformate
+## 5. Datenformate
 
 ### Label-Datei
 
@@ -119,7 +119,7 @@ Die zweite Zeile kann Einheiten enthalten und wird übersprungen.
 
 ---
 
-## 1. Konfiguration der Voreinstellungen
+## 6. Konfiguration der Voreinstellungen
 
 ### config.json
 
