@@ -1,6 +1,6 @@
-# projekt_mini – Fahrererkennung
+# Backend Fahrererkennung
 
-Fahrererkennung anhand von Fahrsimulator-Daten. Das System klassifiziert den Fahrer (florian, matthias, fabian) aus CSV-Recordings mittels maschinellem Lernen (RandomForest, LogisticRegression).
+Fahrererkennung anhand von Fahrsimulator-Daten. Das System klassifiziert den Fahrer aus CSV-Recordings mittels maschinellem Lernen (RandomForest, LogisticRegression, GradientBoosting).
 
 ---
 
@@ -14,7 +14,6 @@ Fahrererkennung anhand von Fahrsimulator-Daten. Das System klassifiziert den Fah
 6. [Datenformate](#6-datenformate)
 7. [Konfiguration](#7-konfiguration)
 8. [Grafiken (plots/)](#8-grafiken-plots)
-9. [Weitere Dokumentation](#9-weitere-dokumentation)
 
 ---
 
@@ -26,16 +25,15 @@ Fahrererkennung anhand von Fahrsimulator-Daten. Das System klassifiziert den Fah
 |----------|--------------|
 | **Training** | Trainiert RandomForest und LogisticRegression auf gelabelten Recordings |
 | **Vorhersage** | Klassifiziert unbekannte Recordings mit trainierten Modellen |
-| **Label-Verwaltung** | Erstellen und Lesen von Label-Dateien (File ↔ Fahrer) |
-| **Pipeline-Fortschritt** | `pipeline_progress.json` für Frontend-Statusanzeige (Polling) |
-| **Grafiken** | Konfusionsmatrix, Feature Importance, Accuracy, Vorhersage richtig/falsch |
+| **Pipeline-Fortschritt** | `pipeline_progress.json` / `progress_callback` für Frontend-Statusanzeige |
+| **Grafiken** | Konfusionsmatrix, Feature Importance, Accuracy |
 
 ### Technik
 
 - **Features:** Featuretools (Aggregationen) + TSFresh (Zeitreihen-Features)
-- **Modelle:** RandomForest, LogisticRegression
-- **Validierung:** StratifiedGroupKFold (Recordings bleiben zusammen, keine Datenleckage)
-- **Fenster:** 25 Sekunden, Schrittweite 12 Sekunden
+- **Modelle:** RandomForest, LogisticRegression, GradientBoosting
+- **Validierung:** StratifiedGroupKFold (über ganze Recordings)
+- **Fenster:** standardmäßig 25 Sekunden, Schrittweite 12 Sekunden; Kann konfiguriert werden
 
 ---
 
@@ -43,12 +41,11 @@ Fahrererkennung anhand von Fahrsimulator-Daten. Das System klassifiziert den Fah
 
 ### Voraussetzungen
 
-- Python 3.10 oder höher
+- Python 3.10 - 3.12  (Featuretools kann in 3.13 Probleme verursachen)
 
 ### Abhängigkeiten installieren
 
 ```bash
-cd projekt_mini
 pip install -r requirements.txt
 ```
 
@@ -67,20 +64,11 @@ pip install -r requirements.txt
 ## 3. Schnellstart
 
 ```bash
-cd projekt_mini
-
 # 1. Training (labels.lbl und data/ müssen vorhanden sein)
-python run.py
+python train.py
 
 # 2. Vorhersage (test_labels.lbl und trainierte Modelle erforderlich)
 python predict.py
-```
-
-Alternativ mit `main.py` (falls vorhanden):
-
-```bash
-python main.py train
-python main.py predict
 ```
 
 ---
@@ -88,31 +76,30 @@ python main.py predict
 ## 4. Projektstruktur
 
 ```
-projekt_mini/
+core/
 ├── config.py              # Zentrale Konfiguration
-├── config.json            # Parametrisierte Einstellungen (optional)
 ├── data.py                # Datenladen, Fensterbildung, Labels
 ├── features.py            # Feature-Extraktion (Featuretools + TSFresh)
-├── run.py                 # Trainings-Pipeline
+├── train.py               # Trainings-Pipeline
 ├── predict.py             # Vorhersage-Pipeline
-├── backend_api.py         # GUI-Schnittstelle
+├── backend_adapter.py     # GUI-Schnittstelle
 ├── progress.py            # pipeline_progress.json für Frontend-Status
 ├── plots.py               # Grafiken (Konfusionsmatrix, Feature Importance, Accuracy, Vorhersage)
 ├── main.py                # Einstiegspunkt (train | predict)
-├── labels.lbl             # Trainings-Labels
-├── test_labels.lbl       # Test-Labels
-├── data/                  # CSV-Recordings
+├── labels.lbl             # Trainings-Labels (optional für CLI-Nutzung)
+├── test_labels.lbl        # Test-Labels (optional für CLI-Nutzung)
+├── data/                  # CSV-Recordings (optional für CLI-Nutzung)
 ├── artifacts/             # Modelle und Ergebnisse
 │   ├── model_randomforest.joblib
 │   ├── model_logreg.joblib
+│   ├── model_gradientboosting.joblib
 │   ├── ergebnis.txt
-│   ├── pipeline_progress.json   # Fortschritt für Frontend-Polling
+│   ├── pipeline_progress.json
 │   ├── test_ergebnis_*.csv
 │   └── plots/             # Unterordner mit Grafiken
 │       ├── confusion/     # Konfusionsmatrix pro Modell
 │       ├── importance/    # Feature Importance pro Modell
-│       ├── accuracy/      # Modell-Genauigkeit (Balkendiagramm)
-│       └── prediction/    # Vorhersage richtig/falsch pro Modell
+│       └── accuracy/      # Modell-Genauigkeit (Balkendiagramm)
 ├── requirements.txt
 ├── README.md              # Diese Dokumentation
 └── SCHNITTSTELLEN_BESCHREIBUNG.md   # API für Tkinter-Frontend
@@ -122,11 +109,11 @@ projekt_mini/
 
 ## 5. Nutzung
 
-### CLI (run.py / predict.py)
+### CLI (train.py / predict.py)
 
 **Training:**
 ```bash
-python run.py [--data-dir DIR] [--labels FILE] [--artifacts DIR] [--config PATH] [--cv-splits N] [--random-state N]
+python train.py [--data-dir DIR] [--labels FILE] [--artifacts DIR] [--config PATH] [--cv-splits N] [--random-state N]
 ```
 
 **Vorhersage:**
@@ -134,37 +121,24 @@ python run.py [--data-dir DIR] [--labels FILE] [--artifacts DIR] [--config PATH]
 python predict.py [--data-dir DIR] [--test-labels FILE] [--artifacts DIR] [--config PATH]
 ```
 
-### Programm-API
-
-```python
-from run import train
-from predict import predict
-
-# Training
-train(data_dir="data", labels_file="labels.lbl", artifacts_dir="artifacts")
-
-# Vorhersage
-predict(data_dir="data", test_labels_file="test_labels.lbl", artifacts_dir="artifacts")
-```
-
-### GUI-API (backend_api)
+### GUI-API (backend_adapter)
 
 Für Tkinter- und andere GUI-Frontends siehe **SCHNITTSTELLEN_BESCHREIBUNG.md**.
 
 ```python
-from backend_api import train, predict, write_labels_file, get_config
+from backend_adapter import train, predict, get_config, set_config
 
-ok, msg = train(data_dir="data", labels_file="labels.lbl", artifacts_dir="artifacts")
-ok, out, ergebnisse = predict(data_dir="data", test_labels_file="test_labels.lbl", artifacts_dir="artifacts")
+ok, msg = train(data_dir="data", labels=pd.DataFrame(columns=["File","Label"]), artifacts_dir="artifacts")
+ok, out, ergebnisse = predict(data_dir="data", test_labels_file=pd.DataFrame(columns=["File","Label"]), artifacts_dir="artifacts")
 ```
 
 ---
 
 ## 6. Datenformate
 
-### Label-Datei (labels.lbl, test_labels.lbl)
+### Label-Datei
 
-CSV mit Header, Trennzeichen Komma oder Tab:
+CSV mit Header, Trennzeichen Komma:
 
 ```
 File,Label
@@ -173,7 +147,7 @@ recording_2026_02_10__15_38_03_matthias.csv,matthias
 ```
 
 - **File:** Dateiname (relativ zu `data_dir`) oder absoluter Pfad
-- **Label:** Fahrer-ID (florian, matthias, fabian oder andere)
+- **Label:** Fahrer-ID
 
 ### CSV-Recording
 
@@ -204,14 +178,15 @@ Optional im Projekt-Root. Beispiel:
   "labels_file": "labels.lbl",
   "test_labels_file": "test_labels.lbl",
   "artifacts_dir": "artifacts",
-  "models": ["randomforest", "logreg"],
+  "models": ["randomforest", "logreg", "gradientboosting"],
   "feature_set": "both",
   "window_sec": 25,
   "step_sec": 12,
   "min_points": 300,
   "max_points": 500,
   "cv_splits": 5,
-  "random_state": 42
+  "random_state": 42,
+  "use_grid_search": true
 }
 ```
 
@@ -232,19 +207,9 @@ Nach Training und Vorhersage werden Grafiken in `artifacts/plots/` erzeugt:
 
 | Ordner | Inhalt |
 |--------|--------|
-| `confusion/` | Konfusionsmatrix pro Modell (`confusion_randomforest.png`, `confusion_logreg.png`) |
+| `confusion/` | Konfusionsmatrix pro Modell |
 | `importance/` | Feature Importance (Top 30) pro Modell |
 | `accuracy/` | Balkendiagramm der Modell-Genauigkeiten |
-| `prediction/` | Grafik: Vorhersagen richtig (grün) / falsch (rot) pro Recording |
-
----
-
-## 9. Weitere Dokumentation
-
-| Datei | Inhalt |
-|-------|--------|
-| **SCHNITTSTELLEN_BESCHREIBUNG.md** | API für Tkinter-Frontend (train, predict, write_labels_file, get_config, pipeline_progress.json) |
-| **config.py**, **data.py**, etc. | Modul-Docstrings und Code-Kommentare |
 
 ---
 
