@@ -7,8 +7,27 @@ from DriveIdent.lib.components.GenericButton import GenericButton
 from DriveIdent.lib.core.backend_adapter import get_config
 
 class TrainingFrame(ttk.Frame):
+    '''
+    This Class creates a Frame to display training files and model options.
+    It consist of a LabelFrame on the left side, which contains an EditableTable
+    and a LabelFrame on the right side, containing a special canvas which holds the model options in a scrollable frame. 
+    A canvas is used because tkinter does not natively support scrollbars on a frame 
+    '''
     
     def __init__(self, parent, styleConfig : dict, modelOptions : dict[str, tk.Variable], onSelectTrainRecordings : Callable, onTrain : Callable, onLoadLabels : Callable, onSaveLabels : Callable, trainFiles : pd.DataFrame):
+        '''
+        Constructs a TrainingFrame.
+
+        Args:
+            parent: Tkinter Parent Object where this Object is placed into (ie. a Frame)
+            styleConfig: A dictionary containing stylization information
+            modelOptions: A dictionary containing keys and default values of the model options. This dict is called by reference so must no be overridden.
+            onSelectTrainRecordings: Callback Function which is called when the Auswählen-Button is pressed
+            onTrain: Callback Function which is called when the Trainieren-Button is pressed
+            onLoadLabels: Callback Function which is called when the Label-Import-Button is pressed
+            onSaveLabels: Callback Function which is called when the Label-Export-Button is pressed
+            trainFiles: pd.DataFrame reference, which is called by reference so must not be overridden. Contains / or shall contain the selected training files
+        '''
         super().__init__(parent)
 
         self.options = modelOptions
@@ -108,9 +127,11 @@ class TrainingFrame(ttk.Frame):
         leftFrame.grid_propagate(False)
 
     def updateTables(self):
+        ''' Updates the EditableTable '''
         self.trainingFileTable.refresh()
 
     def validateNumber(self, newValue : str):
+        ''' Helper Function to validate the input in model option entry fields '''
         if newValue == "":
             return True
         

@@ -13,6 +13,8 @@ class StepProgress(tk.Frame):
         
         :param self: Self
         :param parent: A tkinter object to use as the parent for this object
+        :param styleConfig: A dictionary containing stylization information
+        :type styleConfig: dict
         :param labels: Labels for the steps. Must not be empty.
         :type labels: list[str]
         :param stepAccessValidationFct: This Lambda Function provides an integer - the index of the step - to determine if the step can be accessed by clicking on it. If this function returns true, the step can be accessed. 
@@ -66,6 +68,9 @@ class StepProgress(tk.Frame):
         self.updateProgress()
 
     def onButtonSelect(self):
+        '''
+        Sets the progress to the selected button, IF the button can be accessed. Which is checked by calling StepProgressBar#accessFct
+        '''
         current = self.current.get()
         selected = self.selected.get()
 
@@ -78,6 +83,9 @@ class StepProgress(tk.Frame):
         self.updateProgress()
 
     def updateProgress(self):
+        '''
+        Updates the progress bar value und button colors according to the current step
+        '''
         current = self.current.get()
 
         self.progress["value"] = current - 1
@@ -92,17 +100,21 @@ class StepProgress(tk.Frame):
             else:
                 btn.config(bg=self.styleConfig["colors"]["buttonBg"], selectcolor=self.styleConfig["colors"]["buttonSelect"])
 
-    def getCurrentStep(self):
+    def getCurrentStep(self) -> int:
+        ''' Returns the index of the current step '''
         return self.current.get()
     
     def setCurrentStep(self, value : int):
+        ''' Sets the current step to the provided index '''
         self.current.set(value)
         self.updateProgress()
 
     def next(self):
+        ''' Sets the progress to the next step '''
         if self.getCurrentStep() < self.steps:
             self.setCurrentStep(self.getCurrentStep() + 1)
 
     def back(self):
+        ''' Sets the progress to the previous step '''
         if self.getCurrentStep() > 1:
             self.setCurrentStep(self.getCurrentStep() - 1)

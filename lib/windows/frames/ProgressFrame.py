@@ -3,8 +3,22 @@ from tkinter import ttk
 from typing import Callable
 
 class ProgressFrame(tk.Frame):
-
+    '''
+    This Class creates a Frame to display the progress of a process.
+    It contains a progress bar and a Cancel-Button
+    '''
+    
     def __init__(self, parent, styleConfig : dict, title : str, maxProgress : int, onCancel : Callable):
+        '''
+        Constructs a ProgressFrame.
+
+        Args:
+            parent: Tkinter Parent Object where this Object is placed into (ie. a Frame)
+            styleConfig: A dictionary containing stylization information
+            title: Title of this Popup
+            maxProgress: integer maximum value of the progress bar
+            onCancel: Callback Function which is called when the Abbrechen-Button is pressed
+        '''
         super().__init__(parent)
         titleLabel = tk.Label(self, text=title, font=styleConfig["font"]["h1"])
         titleLabel.pack(pady=styleConfig["paddings"]["default"])

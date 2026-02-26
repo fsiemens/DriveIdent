@@ -3,11 +3,13 @@ from pathlib import Path
 import shutil
 import sys
 
+# Get Base Directory for relative file paths
 if getattr(sys, "frozen", False):
     BASE_DIR = Path(sys.executable).parent
 else:
     BASE_DIR = Path(__file__).resolve().parent
 
+# Some Application Settings bundled together, to allow for easier changes
 CONFIG = {
     "font": {
         "text": ("Calibri", 12),
@@ -50,6 +52,7 @@ CONFIG = {
 def main():
     folder = Path(CONFIG["paths"]["artifacts"])
 
+    # Clear artifact folder to remove files from previous runs
     if folder.exists():
         for item in folder.iterdir():
             if item.is_file() or item.is_symlink():
@@ -61,6 +64,7 @@ def main():
     root.mainloop()
 
 if __name__ == "__main__":
+    # Required to allow multi-threading 
     import multiprocessing
     multiprocessing.freeze_support()
     main()

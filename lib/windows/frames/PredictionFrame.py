@@ -7,8 +7,21 @@ from DriveIdent.lib.components.GenericButton import GenericButton
 from DriveIdent.lib.core.backend_adapter import get_config
 
 class PredictionFrame(ttk.Frame):
-    
+    '''
+    This Class creates a Frame to display files for prediction and the prediction results.
+    '''
+
     def __init__(self, parent, styleConfig : dict, testFiles : pd.DataFrame, onSelectTestRecordings : Callable, onPredict : Callable):
+        '''
+        Constructs a PredictionFrame.
+
+        Args:
+            parent: Tkinter Parent Object where this Object is placed into (ie. a Frame)
+            styleConfig: A dictionary containing stylization information
+            testFiles: pd.DataFrame containing the selected files for prediction
+            onSelectTestRecordings: Callback Function which is called when the Auswählen-Button is pressed
+            onPredict: Callback Function which is called when the Vorhersagen-Button is pressed
+        '''
         super().__init__(parent)
 
         self.testFiles = testFiles
@@ -34,4 +47,5 @@ class PredictionFrame(ttk.Frame):
         leftFrame.grid_propagate(False)
 
     def updateTables(self):
+        ''' Updates the EditableTable which displays the files for prediction '''
         self.testFileTable.refresh()

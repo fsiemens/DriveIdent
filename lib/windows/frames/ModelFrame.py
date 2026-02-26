@@ -7,7 +7,23 @@ from typing import Callable
 from DriveIdent.lib.components.ImageGallery import ImageGallery
 
 class ModelFrame(tk.Frame):
+    '''
+    This Class creates a Frame to display Model information and plots after training is completed.
+    It consists of a LabelFrame on the left side, which displays the model accuracies 
+    and a LabelFrame on the right, which contaings a ImageGallery to display the plots generated in the training process.
+    '''
+
     def __init__(self, parent, styleConfig : dict, onNext : Callable, modelAccuracyData : pd.DataFrame = pd.DataFrame(columns=["Model", "Precision"]), images : list[str] = []):
+        '''
+        Constructs a ModelFrame.
+
+        Args:
+            parent: Tkinter Parent Object where this Object is placed into (ie. a Frame)
+            styleConfig: A dictionary containing stylization information
+            onNext: Callback Function which is called when the Weiter-Button is pressed
+            modelAccuracyData: pd.DataFrame containing the accuracy data of the models
+            images: A List of strings containing file paths of images
+        '''
         super().__init__(parent)
         self.modelAccurarcyData = modelAccuracyData
         print(self.modelAccurarcyData)

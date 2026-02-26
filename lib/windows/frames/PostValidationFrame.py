@@ -2,8 +2,22 @@ import tkinter as tk
 from typing import Callable
 
 class PostValidationFrame(tk.Frame):
+    '''
+    This Class creates a Frame to display faulty files.
+    It also contains buttons to cancel the file selection or proceed without those faulty files. 
+    '''
 
     def __init__(self, parent, styleConfig : dict, onCancel : Callable, onProceed : Callable, faultyFiles : list[str] = []):
+        '''
+        Constructs a PostValidationFrame.
+
+        Args:
+            parent: Tkinter Parent Object where this Object is placed into (ie. a Frame)
+            styleConfig: A dictionary containing stylization information
+            onCancel: Callback Function which is called when the Abbrechen-Button is pressed
+            onProceed: Callback Function which is called when the Fortfahren-Button is pressed
+            faultyFiles: A List of strings containing file names of faulty recordings
+        '''
         super().__init__(parent)
 
         self.grid_rowconfigure(0, weight=3)   
